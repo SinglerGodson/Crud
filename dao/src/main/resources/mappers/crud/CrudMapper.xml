@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.singler.godson.crud.dao.CrudDao">
+
+    <sql id="commonWhere">
+        `deleted` = 0
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO
+        `${hibatisTableName }`
+        <bind name="hibatisColumnsExcludes" value="{'id', 'deleted', 'version', 'created', 'modified', 'creator', 'modifier'}"/>
+        (`deleted`, `version`, `created`, `modified`, `creator`, `modifier`,
+        <include refid="com.singler.godson.hibatis.dao.HibatisDao.insertColumns"/>)
+        VALUES
+        <foreach collection="hibatisEntities" index="index" separator=",">
+            (0, 1, NOW(), NOW(), #{accountId }, #{accountId },
+            <include refid="com.singler.godson.hibatis.dao.HibatisDao.insertValues"/>)
+        </foreach>
+    </insert>
+
+    <update id="deleteById">
+        UPDATE `${hibatisTableName }`
+        SET `deleted` = 1,
+        `version` = `version` + 1,
+        `modified` = NOW(),
+        `modifier` = #{accountId }
+        WHERE <include refid="com.singler.godson.crud.dao.CrudDao.commonWhere"/>
+          AND `id` = #{id }
+    </update>
+
+    <update id="delete">
+        UPDATE `${hibatisTableName }`
+        SET `deleted` = 1,
+        `version` = `version` + 1,
+        `modified` = NOW(),
+        `modifier` = #{accountId }
+        WHERE
+        <bind name="hibatisWhereExcludes" value="{'deleted'}"/>
+        <include refid="com.singler.godson.crud.dao.CrudDao.commonWhere"/>
+        <include refid="com.singler.godson.hibatis.dao.HibatisDao.where"/>
+    </update>
+
+
+    <update id="update">
+        UPDATE `${hibatisTableName }`
+        SET
+        `version` = `version` + 1,
+        `modified` = NOW(),
+        `modifier` = #{accountId },
+        <bind name="hibatisColumnsExcludes" value="{'id', 'deleted', 'modified', 'modifier', 'created', 'creator', 'version'}"/>
+        <include refid="com.singler.godson.hibatis.dao.HibatisDao.updateColumns"/>
+        WHERE
+        <include refid="com.singler.godson.crud.dao.CrudDao.commonWhere"/>
+        <include refid="com.singler.godson.hibatis.dao.HibatisDao.where"/>
+    </update>
+
+    <update id="updateById">
+        UPDATE `${hibatisTableName }`
+        SET
+        `version` = `version` + 1,
+        `modified` = NOW(),
+        `modifier` = #{accountId },
+        <bind name="hibatisColumnsExcludes" value="{'id', 'deleted', 'modified', 'modifier', 'created', 'creator', 'version'}"/>
+        <include refid="com.singler.godson.hibatis.dao.HibatisDao.updateColumns"/>
+        WHERE
+        <bind name="hibatisWhereExcludes" value="{'id', 'deleted'}"/>
+        <include refid="com.singler.godson.crud.dao.CrudDao.commonWhere"/>
+          AND `id` = #{id }
+    </update>
+
+
+    <select id="select">
+        SELECT
+        <include refid="com.singler.godson.hibatis.dao.HibatisDao.selectColumns"/>
+        FROM `${hibatisTableName }`
+        WHERE
+        <bind name="hibatisWhereExcludes" value="{'deleted'}"/>
+        <include refid="com.singler.godson.crud.dao.CrudDao.commonWhere"/>
+        <include refid="com.singler.godson.hibatis.dao.HibatisDao.where"/>
+        <if test="hibatisOrderBy != null and hibatisOrderBy.size() > 0">
+            ORDER BY
+            <include refid="com.singler.godson.hibatis.dao.HibatisDao.orderBy"/>
+        </if>
+    </select>
+
+    <select id="selectById">
+        SELECT *
+        FROM `${hibatisTableName }`
+        WHERE `id` = #{id }
+        AND <include refid="com.singler.godson.crud.dao.CrudDao.commonWhere"/>
+
+    </select>
+
+    <select id="count" resultType="int" >
+        SELECT COUNT(*)
+        FROM `${hibatisTableName }`
+        WHERE
+        <bind name="hibatisWhereExcludes" value="{'deleted'}"/>
+        <include refid="com.singler.godson.crud.dao.CrudDao.commonWhere"/>
+        <include refid="com.singler.godson.hibatis.dao.HibatisDao.where"/>
+    </select>
+
+    <select id="exist" resultType="boolean" >
+        SELECT IFNULL((
+        SELECT 1 FROM
+        `${hibatisTableName }`
+        WHERE
+        <bind name="hibatisWhereExcludes" value="{'deleted'}"/>
+        <include refid="com.singler.godson.crud.dao.CrudDao.commonWhere"/>
+        <include refid="com.singler.godson.hibatis.dao.HibatisDao.where"/>
+        LIMIT 1), 0)
+    </select>
+
+</mapper>
