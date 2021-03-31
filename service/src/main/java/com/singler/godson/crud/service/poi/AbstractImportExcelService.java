@@ -1,4 +1,4 @@
-package com.singler.godson.crud.service;
+package com.singler.godson.crud.service.poi;
 
 import com.singler.godson.crud.common.exceptions.CrudException;
 import com.singler.godson.crud.common.utils.BeanUtils;
@@ -79,17 +79,15 @@ public abstract class AbstractImportExcelService<ENTITY> {
 
     protected Map<String, String> getTitleFieldMapping() {
         if (titleFieldMap.size() == 0) {
-            synchronized (titleFieldMap) {
-                titleFieldMap.putAll(Arrays.stream(getGenericType().getFields())
-                        .filter(field -> field.isAnnotationPresent(CellMapping.class))
-                        .map   (field -> field.getAnnotation(CellMapping.class))
-                        .collect(toMap(CellMapping::title, CellMapping::field)));
-                // 用定义在类上的注解，覆盖定义在Field上的注解。
-                ExcelImport excelImport = getGenericType().getAnnotation(ExcelImport.class);
-                if (excelImport != null) {
-                    CellMapping[] cellMappings = excelImport.cellMappings();
-                    titleFieldMap.putAll(Arrays.stream(cellMappings).collect(toMap(CellMapping::title, CellMapping::field)));
-                }
+            titleFieldMap.putAll(Arrays.stream(getGenericType().getFields())
+                    .filter(field -> field.isAnnotationPresent(CellMapping.class))
+                    .map   (field -> field.getAnnotation(CellMapping.class))
+                    .collect(toMap(CellMapping::title, CellMapping::field)));
+            // 用定义在类上的注解，覆盖定义在Field上的注解。
+            ExcelImport excelImport = getGenericType().getAnnotation(ExcelImport.class);
+            if (excelImport != null) {
+                CellMapping[] cellMappings = excelImport.cellMappings();
+                titleFieldMap.putAll(Arrays.stream(cellMappings).collect(toMap(CellMapping::title, CellMapping::field)));
             }
         }
         return titleFieldMap;
@@ -97,13 +95,11 @@ public abstract class AbstractImportExcelService<ENTITY> {
 
     protected Map<Integer, String> getFieldIndexMap(Row titleRow) {
         if (fieldIndexMap.size() == 0) {
-            synchronized (fieldIndexMap) {
-                Map<String, String> titleFieldMapping = getTitleFieldMapping();
-                for (int i = 0; i < titleRow.getLastCellNum(); i++) {
-                    Cell cell = titleRow.getCell(i, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
-                    String title = cell.getStringCellValue();
-                    fieldIndexMap.put(i, titleFieldMapping.get(title));
-                }
+            Map<String, String> titleFieldMapping = getTitleFieldMapping();
+            for (int i = 0; i < titleRow.getLastCellNum(); i++) {
+                Cell cell = titleRow.getCell(i, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
+                String title = cell.getStringCellValue();
+                fieldIndexMap.put(i, titleFieldMapping.get(title));
             }
         }
         return fieldIndexMap;
