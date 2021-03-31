@@ -5,6 +5,7 @@ import com.singler.godson.crud.domain.entities.BasicEntity;
 import com.singler.godson.crud.domain.entities.IBasicEntity;
 import com.singler.godson.hibatis.orderby.OrderBy;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ public interface CrudService<ID, ENTITY extends IBasicEntity<ID>,
     int delete(QUERY_REQUEST entity);
 
     int deleteById(ID id);
+
+    int upsert(SAVE_REQUEST entity);
 
     /**
      * 更新实体信息
@@ -76,6 +79,9 @@ public interface CrudService<ID, ENTITY extends IBasicEntity<ID>,
 
     Page<QUERY_RESULT> page(int pageNum, int pageSize, QUERY_REQUEST params, OrderBy orderBy);
 
-    void validate(ENTITY request);
+    default void validate(SAVE_REQUEST entity) {
+        validate(Arrays.asList(entity));
+    }
 
+    void validate(Collection<SAVE_REQUEST> entities);
 }

@@ -1,6 +1,8 @@
 package com.singler.godson.crud.service;
 
 import com.github.pagehelper.Page;
+import com.singler.godson.crud.common.exceptions.CrudException;
+import com.singler.godson.crud.common.utils.CollectionUtils;
 import com.singler.godson.crud.dao.CrudDao;
 import com.singler.godson.crud.domain.entities.IBasicEntity;
 import com.singler.godson.hibatis.orderby.OrderBy;
@@ -55,6 +57,11 @@ public abstract class AbstractCrudService<ID,
     }
 
     @Override
+    public int upsert(SAVE_REQUEST entity) {
+        return 0;
+    }
+
+    @Override
     public int updateById(SAVE_REQUEST entity, ID id) {
         return getDao().updateById(entity, id);
     }
@@ -87,5 +94,17 @@ public abstract class AbstractCrudService<ID,
     @Override
     public Page<QUERY_RESULT> page(int pageNum, int pageSize, QUERY_REQUEST entity, OrderBy orderBy) {
         return getDao().select(orderBy, pageNum, pageNum, entity);
+    }
+
+    @Override
+    public void validate(Collection<SAVE_REQUEST> entities) {
+        if (!CollectionUtils.isEmpty(entities)) {
+            entities.forEach(entity -> {
+                if (entity == null) {
+                    throw new CrudException(500, "参数不可为空");
+                }
+            });
+        }
+        throw new CrudException(500, "参数不可为空");
     }
 }
