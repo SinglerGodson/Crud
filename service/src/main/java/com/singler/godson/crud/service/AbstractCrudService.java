@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 基础增删改查服务实现类
@@ -21,11 +20,11 @@ import java.util.Map;
  */
 public abstract class AbstractCrudService<ID,
                                           ENTITY extends IBasicEntity<ID>,
-                                          SAVE_REQUEST  extends ENTITY,
-                                          QUERY_REQUEST extends ENTITY,
-                                          QUERY_RESULT  extends ENTITY,
+                                          SAVE_DTO   extends ENTITY,
+                                          QUERY_DTO  extends ENTITY,
+                                          RESULT_DTO extends ENTITY,
                                           DAO extends CrudDao<ID, ENTITY>>
-        implements CrudService<ID, ENTITY, SAVE_REQUEST, QUERY_REQUEST, QUERY_RESULT> {
+        implements CrudService<ID, ENTITY, SAVE_DTO, QUERY_DTO, RESULT_DTO> {
 
     @Autowired
     private DAO dao;
@@ -35,19 +34,19 @@ public abstract class AbstractCrudService<ID,
     }
 
     @Override
-    public int insert(SAVE_REQUEST entity) {
+    public int insert(SAVE_DTO entity) {
         validate(entity);
         return getDao().insert(entity);
     }
 
     @Override
-    public int insert(Collection<SAVE_REQUEST> entities) {
+    public int insert(Collection<SAVE_DTO> entities) {
         entities.forEach(this::validate);
         return getDao().insert((Collection) entities);
     }
 
     @Override
-    public int delete(QUERY_REQUEST entity) {
+    public int delete(QUERY_DTO entity) {
         return getDao().delete(entity);
     }
 
@@ -57,47 +56,47 @@ public abstract class AbstractCrudService<ID,
     }
 
     @Override
-    public int upsert(SAVE_REQUEST entity) {
+    public int upsert(SAVE_DTO entity) {
         return 0;
     }
 
     @Override
-    public int updateById(SAVE_REQUEST entity, ID id) {
+    public int updateById(SAVE_DTO entity, ID id) {
         return getDao().updateById(entity, id);
     }
 
     @Override
-    public int count(QUERY_REQUEST entity) {
+    public int count(QUERY_DTO entity) {
         return getDao().count(entity);
     }
 
     @Override
-    public boolean exist(QUERY_REQUEST entity) {
+    public boolean exist(QUERY_DTO entity) {
         return getDao().exist(entity);
     }
 
     @Override
-    public QUERY_RESULT queryById(ID id) {
+    public RESULT_DTO queryById(ID id) {
         return getDao().selectById(id);
     }
 
     @Override
-    public QUERY_RESULT query(QUERY_REQUEST entity) {
+    public RESULT_DTO query(QUERY_DTO entity) {
         return getDao().select(entity);
     }
 
     @Override
-    public List<QUERY_RESULT> query(QUERY_REQUEST entity, OrderBy orderBy) {
+    public List<RESULT_DTO> query(QUERY_DTO entity, OrderBy orderBy) {
         return getDao().select(orderBy, entity);
     }
 
     @Override
-    public Page<QUERY_RESULT> page(int pageNum, int pageSize, QUERY_REQUEST entity, OrderBy orderBy) {
+    public Page<RESULT_DTO> page(int pageNum, int pageSize, QUERY_DTO entity, OrderBy orderBy) {
         return getDao().select(orderBy, pageNum, pageNum, entity);
     }
 
     @Override
-    public void validate(Collection<SAVE_REQUEST> entities) {
+    public void validate(Collection<SAVE_DTO> entities) {
         if (!CollectionUtils.isEmpty(entities)) {
             entities.forEach(entity -> {
                 if (entity == null) {

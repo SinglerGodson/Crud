@@ -1,0 +1,15 @@
+
+`
+java:S2095$"EUse try-with-resources or close this "ZipFile" in a "finally" clause.(êîª¿ÿÿÿÿÿ
+h
+java:S2095b"MUse try-with-resources or close this "ZipOutputStream" in a "finally" clause.(°Õ‡Ğıÿÿÿÿ
+c
+java:S2095k"MUse try-with-resources or close this "FileInputStream" in a "finally" clause.(•½½À
+`
+java:S2095W"EUse try-with-resources or close this "ZipFile" in a "finally" clause.(êîª¿ÿÿÿÿÿ
+c
+java:S2095-"NUse try-with-resources or close this "FileOutputStream" in a "finally" clause.(ÈşÓo
+c
+java:S4042x"NUse "java.nio.file.Files#delete" here for better messages on error conditions.(Ã¥.
+X
+java:S1075„"ARefactor your code to get this URI from a customizable parameter.(¡êŸ´

@@ -22,6 +22,9 @@
         <spring.version>5.2.5.RELEASE</spring.version>
         <springfox.version>2.6.1</springfox.version>
         <crud.version>1.0-SNAPSHOT</crud.version>
+        <hibatis.version>3.4.3-SNAPSHOT</hibatis.version>
+        <jackson.version>2.11.0</jackson.version>
+        <poi.version>3.17</poi.version>
     </properties>
 
     <dependencyManagement>
@@ -55,7 +58,7 @@
             <dependency>
                 <groupId>com.singler.godson.hibatis</groupId>
                 <artifactId>hibatis-dao</artifactId>
-                <version>3.4.2-SNAPSHOT</version>
+                <version>${hibatis.version}</version>
             </dependency>
 
             <dependency>
@@ -92,30 +95,31 @@
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
-                <version>3.17</version>
+                <version>${poi.version}</version>
             </dependency>
             <!-- poi-ooxml可以操作.xlsx 文件 -->
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
-                <version>3.17</version>
+                <version>${poi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml-schemas</artifactId>
-                <version>3.17</version>
+                <version>${poi.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.11.0</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>2.11.0</version>
+                <version>${jackson.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
