@@ -17,8 +17,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="domain" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.16.20" level="project" />
-    <orderEntry type="library" name="Maven: com.singler.godson.hibatis:hibatis-dao:3.4.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.singler.godson.hibatis:hibatis-entity:3.4.3-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.singler.godson.hibatis:hibatis-dao:3.4.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper:5.1.2" level="project" />
     <orderEntry type="library" name="Maven: com.github.jsqlparser:jsqlparser:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.4.6" level="project" />

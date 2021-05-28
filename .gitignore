@@ -1,4 +1,4 @@
 /.gradle
-/.idea
-target
+.idea/
+target/
 *.iml
