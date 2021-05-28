@@ -3,7 +3,6 @@ package com.singler.godson.crud.web.controller;
 import com.singler.godson.crud.common.exceptions.CrudException;
 import com.singler.godson.crud.common.utils.ResponseUtils;
 import com.singler.godson.crud.domain.attachment.DownloadDto;
-import com.singler.godson.crud.domain.dtoes.LoginUserInfo;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequestVo;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResultVo;
 import com.singler.godson.crud.domain.entities.attachment.Attachment;
@@ -40,10 +39,9 @@ public class AttachmentController {
     private AttachmentService attachmentService;
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Attachment uploadFile(HttpServletRequest request,
-                                 LoginUserInfo loginUserInfo,
-                                 @RequestParam("file") MultipartFile file,
-                                 @ModelAttribute Attachment attachment) throws Exception {
+    public Attachment upload(HttpServletRequest request,
+                             @RequestParam("file") MultipartFile file,
+                             @ModelAttribute Attachment attachment) throws IOException {
         String encoding = request.getCharacterEncoding();
         if (encoding == null) {
             request.setCharacterEncoding(CharsetEnum.ENCODED_TYPE_UTF8.getCode());
@@ -52,7 +50,7 @@ public class AttachmentController {
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    public List<AttachmentResultVo> query(@ModelAttribute AttachmentQueryRequestVo queryReqDTO) throws Exception {
+    public List<AttachmentResultVo> query(@ModelAttribute AttachmentQueryRequestVo queryReqDTO) {
         return attachmentService.query(queryReqDTO, OrderBy.DEFAULT);
     }
 
