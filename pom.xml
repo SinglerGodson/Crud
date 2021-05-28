@@ -24,7 +24,7 @@
         <crud.version>1.0-SNAPSHOT</crud.version>
         <hibatis.version>3.4.3-SNAPSHOT</hibatis.version>
         <jackson.version>2.11.0</jackson.version>
-        <poi.version>3.17</poi.version>
+        <poi.version>4.1.0</poi.version>
     </properties>
 
     <dependencyManagement>
@@ -58,6 +58,12 @@
             <dependency>
                 <groupId>com.singler.godson.hibatis</groupId>
                 <artifactId>hibatis-dao</artifactId>
+                <version>${hibatis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.singler.godson.hibatis</groupId>
+                <artifactId>hibatis-entity</artifactId>
                 <version>${hibatis.version}</version>
             </dependency>
 
@@ -108,7 +114,20 @@
                 <artifactId>poi-ooxml-schemas</artifactId>
                 <version>${poi.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-scratchpad</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.opensagres.xdocreport</groupId>
+                <artifactId>fr.opensagres.xdocreport.converter.docx.xwpf</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.23</version>
+            </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
