@@ -6,7 +6,6 @@ import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequestVo;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResultVo;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentSaveRequestVo;
 import com.singler.godson.crud.domain.entities.attachment.Attachment;
-import com.singler.godson.crud.enumtype.ContentTypeEnum;
 import com.singler.godson.crud.service.CrudService;
 import com.singler.godson.hibatis.orderby.OrderBy;
 
