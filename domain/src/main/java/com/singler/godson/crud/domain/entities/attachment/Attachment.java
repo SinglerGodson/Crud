@@ -10,6 +10,36 @@ import lombok.Data;
 public class Attachment extends BasicEntity<Long> {
     private static final long serialVersionUID = 1L;
 
+    public Attachment(){}
+
+    public Attachment(String name){
+
+    }
+
+    public Attachment(String name, byte[] bytes) {
+        this.setName(name);
+        this.setBytes(bytes);
+    }
+
+    public Attachment(String module, Long type, Long bizId) {
+        this.setType(type);
+        this.setBizId(bizId);
+        this.setModule(module);
+    }
+
+    public Attachment(String name, String module, Long type, Long bizId) {
+        this.setName(name);
+        this.setType(type);
+        this.setBizId(bizId);
+        this.setModule(module);
+    }
+
+    public Attachment(byte[] bytes, String name, String ext) {
+        this.ext = ext;
+        this.name = name;
+        this.bytes = bytes;
+    }
+
     /**
      * 业务id
      */

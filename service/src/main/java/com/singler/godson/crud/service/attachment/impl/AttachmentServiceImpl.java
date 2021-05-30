@@ -3,9 +3,7 @@ package com.singler.godson.crud.service.attachment.impl;
 import com.singler.godson.crud.common.exceptions.CrudException;
 import com.singler.godson.crud.common.utils.CollectionUtils;
 import com.singler.godson.crud.common.utils.FileUtils;
-import com.singler.godson.crud.common.utils.PoiUtils;
 import com.singler.godson.crud.dao.attachment.AttachmentDao;
-import com.singler.godson.crud.domain.attachment.DownloadDto;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentCountResultVo;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequestVo;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResultVo;
@@ -14,16 +12,19 @@ import com.singler.godson.crud.domain.entities.attachment.Attachment;
 import com.singler.godson.crud.enumtype.ContentTypeEnum;
 import com.singler.godson.crud.service.AbstractCrudService;
 import com.singler.godson.crud.service.attachment.AttachmentService;
+import com.singler.godson.crud.service.attachment.UploadedService;
 import com.singler.godson.hibatis.orderby.OrderBy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.utils.Lists;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,132 +40,102 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
         AttachmentSaveRequestVo, AttachmentQueryRequestVo, AttachmentResultVo, AttachmentDao>
         implements AttachmentService {
 
-    @Override
-    @Transactional(rollbackFor = Throwable.class)
-    public Attachment upload(File file, String module, Long type, Long bizId) throws IOException {
-        Attachment attachment = upload(file, "");
-        attachment.setType(type);
-        attachment.setBizId(bizId);
-        attachment.setModule(module);
-        return attachment;
-    }
-
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public Attachment upload(File file) throws IOException {
-        return upload(file, file.getName());
+        return upload(file.getName(), file);
     }
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public Attachment upload(File file, String aliasFileName) throws IOException {
+    public Attachment upload(String fileName, File file) throws IOException {
+        return upload(new Attachment(fileName), file);
+    }
+
+    @Override
+    public Attachment upload(String fileName, byte[] bytes) throws IOException {
+        return upload(new Attachment(fileName, bytes));
+    }
+
+    @Override
+    public Attachment upload(String fileName, InputStream inputStream) throws IOException {
+        return upload(new Attachment(fileName), inputStream);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public Attachment upload(Attachment attachment, File file) throws IOException {
         byte[] bytes = FileUtils.fileToBytes(file);
-        if (StringUtils.isEmpty(aliasFileName)) {
-            aliasFileName = file.getName();
+        if (StringUtils.isEmpty(attachment.getName())) {
+            attachment.setName(file.getName());
         }
-        return upload(bytes, aliasFileName);
+        attachment.setBytes(bytes);
+        return upload(attachment);
     }
 
     @Override
-    @Transactional(rollbackFor = Throwable.class)
-    public Attachment upload(File file, Attachment attachment) throws IOException {
-        return upload(file, attachment.getName());
-    }
-
-    @Override
-    public Attachment upload(byte[] bytes, Attachment attachment) throws IOException {
-        return upload(bytes, attachment.getName());
-    }
-
-    @Override
-    public Attachment upload(InputStream inputStream, Attachment attachment) throws IOException {
-        return upload(inputStream, attachment.getName());
-    }
-
-    @Override
-    public Attachment upload(InputStream inputStream, String aliasFileName) throws IOException {
+    public Attachment upload(Attachment attachment, InputStream inputStream) throws IOException {
         byte[] bytes = new byte[inputStream.available()];
         inputStream.read(bytes);
-        return upload(bytes, aliasFileName);
+        attachment.setBytes(bytes);
+        return upload(attachment);
     }
 
     @Override
-    public Attachment upload(byte[] bytes, String fileName) throws IOException {
-        Attachment attachment = new Attachment();
-        attachment.setBytes(bytes);
-        attachment.setName(fileName);
-        attachment.setBizId(UN_RELATED_BIZ_ID);
-        attachment.setSize((long) bytes.length);
-        attachment.setMd5(DigestUtils.md5Hex(bytes));
+    public Attachment upload(Attachment attachment) {
+        if (attachment.getBizId() == null) {
+            attachment.setBizId(UN_RELATED_BIZ_ID);
+        }
+        attachment.setSize((long) attachment.getBytes().length);
+        attachment.setMd5(DigestUtils.md5Hex(attachment.getBytes()));
+        String fileName = attachment.getName();
         if (!StringUtils.isEmpty(fileName)) {
             attachment.setExt(fileName.substring(fileName.lastIndexOf(FileUtils.POINT) + 1));
         }
 //        attachment.setUrl(ossClientProxy.uploadFile(attachment.getPlatformId(), bytes, fileName));
         getDao().insert(attachment);
+        return uploaded(attachment);
+    }
+
+    private Attachment uploaded(Attachment attachment) {
+        UploadedService uploadedService = getUploadedService(attachment);
+        if (uploadedService != null) {
+            uploadedService.uploaded(attachment);
+        }
         return attachment;
     }
 
+    private static final String UPLOADED_SERVICE_NAME = "%s%dUploadedServiceImpl";
 
-    @Override
-    public Attachment upload(byte[] bytes, String module, Long type, Long bizId) throws IOException {
-        return null;
+    private UploadedService getUploadedService(Attachment attachment) {
+        String uploadedServiceName = String.format(UPLOADED_SERVICE_NAME, attachment.getModule(), attachment.getType());
+        try {
+            return applicationContext.getBean(uploadedServiceName, UploadedService.class);
+        } catch (BeansException e) {
+            return null;
+        }
     }
 
     @Override
-    public Attachment upload(InputStream inputStream, String module, Long type, Long bizId) throws IOException {
-        return null;
-    }
-
-    @Override
-    public DownloadDto download(Long id) {
+    public Attachment download(Long id) {
         return download(this.queryById(id));
     }
 
     @Override
-    public DownloadDto download(Attachment attachment) {
-        byte[] bytes = downloadBytes(attachment);
-        return new DownloadDto(bytes, attachment.getName(), ContentTypeEnum.getContentType(attachment.getExt()));
+    public Attachment download(Attachment attachment) {
+        return new Attachment(downloadBytes(attachment), attachment.getName(), ContentTypeEnum.getContentType(attachment.getExt()));
     }
 
     @Override
-    public DownloadDto download(String module, Long type, Long bizId) {
+    public Attachment download(String module, Long type, Long bizId) {
         AttachmentQueryRequestVo queryVo = new AttachmentQueryRequestVo();
         queryVo.setType(type);
         queryVo.setBizId(bizId);
         queryVo.setModule(module);
         return download(this.query(queryVo));
-    }
-
-//    private void response( File file, String downloadFileName) {
-//        try (FileInputStream inputStream = new FileInputStream(file)) {
-//            String fileExt = FileUtils.extensionOf(file.getName());
-//            response(inputStream, downloadFileName, fileExt);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void response( InputStream inputStream, String downloadFileName, String fileExt) {
-//        try {
-//            byte[] bytes = new byte[inputStream.available()];
-//            inputStream.read(bytes, 0, inputStream.available());
-//            response(bytes, downloadFileName, ContentTypeEnum.getByExtension(fileExt));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private void response( byte[] bytes, String downloadFileName, ContentTypeEnum contentTypeEnum) {
-//        if (StringUtils.isEmpty(downloadFileName) && PoiUtils.isOfficeFile(contentTypeEnum)) {
-//            byte[] htmlBytes = PoiUtils.officeToHtml(bytes, contentTypeEnum);
-//            response(htmlBytes, downloadFileName, contentTypeEnum.getContentType());
-//        } else {
-//            response(bytes, downloadFileName, contentTypeEnum.getContentType());
-//        }
-//    }
-
-    private void response( byte[] bytes, String downloadFileName, String contentType) {
     }
 
     /**

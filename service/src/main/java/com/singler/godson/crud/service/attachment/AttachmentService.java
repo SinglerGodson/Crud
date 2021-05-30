@@ -1,6 +1,5 @@
 package com.singler.godson.crud.service.attachment;
 
-import com.singler.godson.crud.domain.attachment.DownloadDto;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentCountResultVo;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequestVo;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResultVo;
@@ -26,22 +25,17 @@ public interface AttachmentService extends CrudService<Long, Attachment, Attachm
 
     Attachment upload(File file) throws IOException;
 
-    Attachment upload(File file, String fileName) throws IOException;
-    Attachment upload(byte[] bytes, String fileName) throws IOException;
-    Attachment upload(InputStream inputStream, String fileName) throws IOException;
+    Attachment upload(String fileName, File file) throws IOException;
+    Attachment upload(String fileName, byte[] bytes) throws IOException;
+    Attachment upload(String fileName, InputStream inputStream) throws IOException;
 
-    Attachment upload(File file, Attachment attachment) throws IOException;
-    Attachment upload(byte[] bytes, Attachment attachment) throws IOException;
-    Attachment upload(InputStream inputStream, Attachment attachment) throws IOException;
+    Attachment upload(Attachment attachment);
+    Attachment upload(Attachment attachment, File file) throws IOException;
+    Attachment upload(Attachment attachment, InputStream inputStream) throws IOException;
 
-    Attachment upload(File file, String module, Long type, Long bizId) throws IOException;
-    Attachment upload(byte[] bytes, String module, Long type, Long bizId) throws IOException;
-    Attachment upload(InputStream inputStream, String module, Long type, Long bizId) throws IOException;
-
-
-    DownloadDto download(Long id);
-    DownloadDto download(Attachment attachment);
-    DownloadDto download(String module, Long type, Long bizId);
+    Attachment download(Long id);
+    Attachment download(Attachment attachment);
+    Attachment download(String module, Long type, Long bizId);
 
     /**
      * 根据附件id将附件下载到本地服务器，并返回此文件。
