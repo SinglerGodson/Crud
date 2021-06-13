@@ -5,6 +5,7 @@ import com.singler.godson.crud.common.utils.BeanUtils;
 import com.singler.godson.crud.common.utils.ClassUtils;
 import com.singler.godson.crud.domain.form.Option;
 import com.singler.godson.crud.service.selectable.AbstractCacheableSelectableService;
+import com.singler.godson.crud.service.selectable.EnumsSelectableServiceImpl;
 import com.singler.godson.crud.service.selectable.SelectableService;
 import com.singler.godson.crud.common.utils.RequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,11 @@ public class SelectableController {
             return BeanUtils.mapToBean(RequestUtils.paramsMap(request), genericClass);
         }
         return null;
+    }
+
+    @RequestMapping(value = "/form/selectable/enums/{enumName}", method = RequestMethod.GET)
+    public List<Option> select(@PathVariable("enumName") String enumName) {
+        return applicationContext.getBean(EnumsSelectableServiceImpl.class).options(enumName);
     }
 
     private String generateServiceName(String serviceName) {
