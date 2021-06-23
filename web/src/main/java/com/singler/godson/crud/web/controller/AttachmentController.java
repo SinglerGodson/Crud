@@ -10,7 +10,6 @@ import com.singler.godson.crud.service.attachment.AttachmentService;
 import com.singler.godson.hibatis.orderby.OrderBy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,10 +34,10 @@ public class AttachmentController {
     @Autowired
     private AttachmentService attachmentService;
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public com.singler.godson.crud.domain.entities.attachment.Attachment upload(HttpServletRequest request,
-                                                                                @RequestParam("file") MultipartFile file,
-                                                                                @ModelAttribute com.singler.godson.crud.domain.entities.attachment.Attachment attachment) throws IOException {
+    @GetMapping("/upload")
+    public Attachment upload(HttpServletRequest request,
+                            @RequestParam("file") MultipartFile file,
+                            @ModelAttribute com.singler.godson.crud.domain.entities.attachment.Attachment attachment) throws IOException {
         String encoding = request.getCharacterEncoding();
         if (encoding == null) {
             request.setCharacterEncoding(CharsetEnum.ENCODED_TYPE_UTF8.getCode());
@@ -46,12 +45,20 @@ public class AttachmentController {
         return attachmentService.upload(attachment, MultipartFileUtils.transferToFile(file));
     }
 
-    @RequestMapping(value = "/query", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @GetMapping("/query")
     public List<AttachmentResultVo> query(@ModelAttribute AttachmentQueryRequestVo queryReqDTO) {
         return attachmentService.query(queryReqDTO, OrderBy.DEFAULT);
     }
 
-    @RequestMapping(value = "/download/{module}/{type}/{bizId}", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/download/{filePath}/{fileName}")
+    public void download(HttpServletResponse response,
+                         @PathVariable("filePath")String filePath,
+                         @PathVariable("fileName")String fileName) {
+        Attachment attachment = attachmentService.download(filePath, fileName);
+        ResponseUtils.response(response, attachment.getBytes(), attachment.getName(), attachment.getExt());
+    }
+
+    @GetMapping("/download/{module}/{type}/{bizId}")
     public void download(HttpServletResponse response,
                          @PathVariable("module") String module,
                          @PathVariable("type") Long type,
@@ -60,25 +67,25 @@ public class AttachmentController {
         ResponseUtils.response(response, attachment.getBytes(), attachment.getName(), attachment.getExt());
     }
 
-    @RequestMapping(value = "/download/{id}", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+    @GetMapping("/download/{id}")
     public void download(HttpServletResponse response, @PathVariable("id") Long id) {
          Attachment attachment = attachmentService.download(id);
          ResponseUtils.response(response, attachment.getBytes(), attachment.getName(), attachment.getExt());
     }
 
-    @RequestMapping(value = "/delete/{ids}", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+    @GetMapping("/delete/{ids}")
     public int delete(@PathVariable("ids") String idStr) {
         return attachmentService.delete(Arrays.stream(idStr.split(",")).map(Long::parseLong).collect(Collectors.toSet()));
     }
 
-    @RequestMapping(value = "/preview/{id}", method = {RequestMethod.GET, RequestMethod.POST}, produces = "text/html;charset=UTF-8")
+    @GetMapping("/preview/{id}")
     public void preview(HttpServletResponse response, @PathVariable("id") Long id) {
         Attachment attachment = attachmentService.download(id);
         ResponseUtils.response(response, attachment.getBytes(), null, attachment.getExt());
 
     }
 
-    @RequestMapping(value = "/preview/{module}/{type}/{bizId}", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+    @GetMapping("/preview/{module}/{type}/{bizId}")
     public void preview(HttpServletResponse response,
                          @PathVariable("module") String module,
                          @PathVariable("type") Long type,

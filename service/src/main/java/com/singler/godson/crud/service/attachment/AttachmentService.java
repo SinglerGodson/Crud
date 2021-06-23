@@ -36,6 +36,7 @@ public interface AttachmentService extends CrudService<Long, Attachment, Attachm
     Attachment download(Long id);
     Attachment download(Attachment attachment);
     Attachment download(String module, Long type, Long bizId);
+    Attachment download(String path, String fileName);
 
     /**
      * 根据附件id将附件下载到本地服务器，并返回此文件。

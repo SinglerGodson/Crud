@@ -22,10 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -137,6 +139,41 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
         queryVo.setModule(module);
         return download(this.query(queryVo));
     }
+
+
+    private static final String TEMPLATE_PATH = getTemplatePath();
+    private static String getTemplatePath() {
+        try {
+            return ResourceUtils.getURL(ResourceUtils.CLASSPATH_URL_PREFIX).getPath() + "templates/%s/%s";
+        } catch (FileNotFoundException e) {
+            log.error("获取资源路径失败。", e);
+        }
+        return "";
+    }
+
+    private static final Map<String, Attachment> ATTACHMENT_MAP = new ConcurrentHashMap<>();
+    @Override
+    public Attachment download(String packageName, String fileName) {
+        String filePath = String.format(TEMPLATE_PATH, packageName, fileName);
+        Attachment attachment = ATTACHMENT_MAP.get(filePath);
+        if (attachment == null) {
+            synchronized (ATTACHMENT_MAP) {
+                attachment = new Attachment();
+                try (InputStream inputStream = new FileInputStream(filePath)) {
+                    byte[] bytes = new byte[inputStream.available()];
+                    inputStream.read(bytes);
+                    attachment.setBytes(bytes);
+                } catch (IOException e) {
+                    log.error("文件加载失败。", e);
+                }
+                attachment.setName(fileName);
+                attachment.setExt(FileUtils.extensionOf(fileName));
+                ATTACHMENT_MAP.put(filePath, attachment);
+            }
+        }
+        return attachment;
+    }
+
 
     /**
      * 根据附件id将附件下载到本地服务器，并返回此文件。
