@@ -35,20 +35,19 @@ public class ResponseUtils {
     }
 
     public static void response(HttpServletResponse response, InputStream inputStream, String downloadFileName, String extension) {
-        if (inputStream == null) {
-            return;
-        }
-        try {
-            byte[] bytes = new byte[inputStream.available()];
-            inputStream.read(bytes);
-            response(response, bytes, downloadFileName, extension);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+        if (inputStream != null) {
             try {
-                inputStream.close();
+                byte[] bytes = new byte[inputStream.available()];
+                inputStream.read(bytes);
+                response(response, bytes, downloadFileName, extension);
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

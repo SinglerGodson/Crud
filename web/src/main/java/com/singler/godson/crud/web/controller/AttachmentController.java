@@ -10,6 +10,7 @@ import com.singler.godson.crud.service.attachment.AttachmentService;
 import com.singler.godson.hibatis.orderby.OrderBy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -91,6 +92,14 @@ public class AttachmentController {
                          @PathVariable("type") Long type,
                          @PathVariable("bizId") Long bizId) {
         Attachment attachment = attachmentService.download(module, type, bizId);
+        ResponseUtils.response(response, attachment.getBytes(), null, attachment.getExt());
+    }
+
+    @GetMapping(value = "/preview/{filePath}/{fileName}")
+    public void preview(HttpServletResponse response,
+                        @PathVariable("filePath")String filePath,
+                        @PathVariable("fileName")String fileName) {
+        Attachment attachment = attachmentService.download(filePath, fileName);
         ResponseUtils.response(response, attachment.getBytes(), null, attachment.getExt());
     }
 }
