@@ -8,6 +8,7 @@ package com.singler.godson.crud.common.constant;
  * @date 2020/4/5 23:28
  */
 public interface Separators {
+    String DOT = ".";
     String DASH = "-";
     String COMMA = ",";
     String SPACE = " ";
