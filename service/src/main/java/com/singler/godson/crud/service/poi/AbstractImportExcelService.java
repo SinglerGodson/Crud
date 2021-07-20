@@ -1,6 +1,7 @@
 package com.singler.godson.crud.service.poi;
 
 import com.singler.godson.crud.common.exceptions.CrudException;
+import com.singler.godson.crud.common.exceptions.PoiExceptionEnum;
 import com.singler.godson.crud.common.utils.BeanUtils;
 import com.singler.godson.crud.common.utils.ClassUtils;
 import com.singler.godson.crud.common.utils.StringUtils;
@@ -122,7 +123,7 @@ public abstract class AbstractImportExcelService<ENTITY> {
             className = String.format(templateUrlProperty, className);
             templateUrl = environment.getProperty(className);
             if (StringUtils.isEmpty(templateUrl)) {
-                throw new CrudException(501, "未找到" + className + "配置项");
+                throw new CrudException(PoiExceptionEnum.NO_PROPERTIES, className);
             }
         }
         return templateUrl;

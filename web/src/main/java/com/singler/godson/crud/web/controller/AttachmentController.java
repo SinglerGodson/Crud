@@ -5,7 +5,7 @@ import com.singler.godson.crud.common.utils.ResponseUtils;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequest;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResult;
 import com.singler.godson.crud.domain.entities.attachment.Attachment;
-import com.singler.godson.crud.enums.CharsetEnum;
+import com.singler.godson.crud.common.enums.CharsetEnum;
 import com.singler.godson.crud.service.attachment.AttachmentService;
 import com.singler.godson.hibatis.orderby.OrderBy;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +34,10 @@ public class AttachmentController {
     @Autowired
     private AttachmentService attachmentService;
 
-    @GetMapping("/upload")
+    @PostMapping("/upload")
     public Attachment upload(HttpServletRequest request,
                             @RequestParam("file") MultipartFile file,
-                            @ModelAttribute com.singler.godson.crud.domain.entities.attachment.Attachment attachment) throws IOException {
+                            @ModelAttribute Attachment attachment) throws IOException {
         String encoding = request.getCharacterEncoding();
         if (encoding == null) {
             request.setCharacterEncoding(CharsetEnum.ENCODED_TYPE_UTF8.getCode());
@@ -46,8 +46,8 @@ public class AttachmentController {
     }
 
     @GetMapping("/query")
-    public List<AttachmentResult> query(@ModelAttribute AttachmentQueryRequest queryReqDTO) {
-        return attachmentService.query(queryReqDTO, OrderBy.DEFAULT);
+    public List<AttachmentResult> query(@ModelAttribute AttachmentQueryRequest queryReq) {
+        return attachmentService.query(queryReq, OrderBy.DEFAULT);
     }
 
     @GetMapping(value = "/download/{filePath}/{fileName}")
@@ -94,7 +94,7 @@ public class AttachmentController {
         ResponseUtils.response(response, attachment.getBytes(), null, attachment.getExt());
     }
 
-    @GetMapping(value = "/preview/{filePath}/{fileName}")
+    @GetMapping("/preview/{filePath}/{fileName}")
     public void preview(HttpServletResponse response,
                         @PathVariable("filePath")String filePath,
                         @PathVariable("fileName")String fileName) {

@@ -14,6 +14,9 @@ import java.io.IOException;
  * @date 2021/5/28 18:36
  */
 public class MultipartFileUtils {
+
+    private MultipartFileUtils() {}
+
     public static File transferToFile(MultipartFile multipartFile) {
         if (multipartFile != null) {
             String fileName = multipartFile.getOriginalFilename();
@@ -25,7 +28,7 @@ public class MultipartFileUtils {
                     return file;
                 } catch (IOException e) {
                     e.printStackTrace();
-                    throw new CrudException(500, "文件转换失败！");
+                    throw new CrudException("500", "文件转换失败！");
                 }
             }
         }

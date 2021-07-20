@@ -1,7 +1,6 @@
 package com.singler.godson.crud.service.impl;
 
 import com.singler.godson.crud.domain.entities.ITreeEntity;
-import com.singler.godson.crud.service.AbstractCrudService;
 import com.singler.godson.crud.service.TreeService;
 
 import java.util.List;

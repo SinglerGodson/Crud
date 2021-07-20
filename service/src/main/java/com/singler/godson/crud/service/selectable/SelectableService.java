@@ -14,5 +14,11 @@ import java.util.List;
  */
 public interface SelectableService<T> {
     String SERVICE_NAME_SUFFIX = "SelectableServiceImpl";
+
+    /**
+     * 返回符合条件的下拉列表的数据
+     * @param param
+     * @return
+     */
     List<Option> options(T param);
 }

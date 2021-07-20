@@ -25,7 +25,7 @@ public class ImportExcelController {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @RequestMapping(value = "/upload/{serviceName}", method = RequestMethod.POST)
+    @PostMapping("/upload/{serviceName}")
     public <T> List<T> uploadExcel(@RequestParam("excel") MultipartFile file,
                                    @PathVariable("serviceName") String serviceName,
                                    @RequestParam(value = "returnData", defaultValue = "false") boolean returnData) throws IOException {
@@ -35,7 +35,7 @@ public class ImportExcelController {
         return returnData ? dataList : null;
     }
 
-    @RequestMapping(value = "/template/url/{serviceName}", method = RequestMethod.GET)
+    @GetMapping("/template/url/{serviceName}")
     public String templateUrl(@PathVariable("serviceName") String serviceName) {
         return getServiceImpl(serviceName).getTemplateUrl();
     }
@@ -45,7 +45,7 @@ public class ImportExcelController {
             serviceName = applyServiceName(serviceName);
             return applicationContext.getBean(serviceName, AbstractImportExcelService.class);
         } catch (BeansException e) {
-            throw new CrudException(500, "未实现AbstractExcelImportService抽象类");
+            throw new CrudException("500", "未实现AbstractExcelImportService抽象类");
         }
     }
 

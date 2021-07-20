@@ -7,7 +7,7 @@
     <groupId>com.singler.godson.crud</groupId>
     <artifactId>crud</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0.1.csg-SNAPSHOT</version>
 
     <modules>
         <module>web</module>
@@ -21,10 +21,11 @@
     <properties>
         <spring.version>5.2.5.RELEASE</spring.version>
         <springfox.version>2.6.1</springfox.version>
-        <crud.version>1.0-SNAPSHOT</crud.version>
         <hibatis.version>3.4.3-SNAPSHOT</hibatis.version>
         <jackson.version>2.11.0</jackson.version>
         <poi.version>4.1.0</poi.version>
+        <ecc-commons.version>2.0.1.csg-SNAPSHOT</ecc-commons.version>
+        <xdocreport.version>2.0.2</xdocreport.version>
     </properties>
 
     <dependencyManagement>
@@ -32,27 +33,27 @@
             <dependency>
                 <groupId>com.singler.godson.crud</groupId>
                 <artifactId>common</artifactId>
-                <version>${crud.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.singler.godson.crud</groupId>
                 <artifactId>dao</artifactId>
-                <version>${crud.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.singler.godson.crud</groupId>
                 <artifactId>domain</artifactId>
-                <version>${crud.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.singler.godson.crud</groupId>
                 <artifactId>service</artifactId>
-                <version>${crud.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.singler.godson.crud</groupId>
                 <artifactId>web</artifactId>
-                <version>${crud.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -122,6 +123,7 @@
             <dependency>
                 <groupId>fr.opensagres.xdocreport</groupId>
                 <artifactId>fr.opensagres.xdocreport.converter.docx.xwpf</artifactId>
+                <version>${xdocreport.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.freemarker</groupId>
@@ -138,7 +140,16 @@
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.jd.ecc.commons</groupId>
+                <artifactId>ecc-commons-web</artifactId>
+                <version>${ecc-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jd.ecc.commons</groupId>
+                <artifactId>ecc-commons-oss</artifactId>
+                <version>${ecc-commons.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

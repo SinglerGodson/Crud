@@ -1,7 +1,7 @@
 package com.singler.godson.crud.common.utils;
 
 import com.singler.godson.crud.common.exceptions.CrudException;
-import com.singler.godson.crud.enums.ContentTypeEnum;
+import com.singler.godson.crud.common.enums.ContentTypeEnum;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -81,6 +81,6 @@ public class ResponseUtils {
         if (requestAttributes instanceof ServletRequestAttributes) {
             return ((ServletRequestAttributes) requestAttributes).getResponse();
         }
-        throw new CrudException(1002, "无效request，无法获取response");
+        throw new CrudException("1002", "无效request，无法获取response");
     }
 }

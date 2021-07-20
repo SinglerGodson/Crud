@@ -1,6 +1,6 @@
 package com.singler.godson.crud.common.utils;
 
-import com.singler.godson.crud.enums.ContentTypeEnum;
+import com.singler.godson.crud.common.enums.ContentTypeEnum;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLConverter;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLOptions;
 import freemarker.template.Configuration;

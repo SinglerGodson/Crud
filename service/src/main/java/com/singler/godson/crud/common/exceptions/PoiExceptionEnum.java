@@ -1,6 +1,5 @@
-package com.singler.godson.crud.service.poi.exception;
+package com.singler.godson.crud.common.exceptions;
 
-import com.singler.godson.crud.common.exceptions.ExceptionInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,9 +13,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PoiExceptionEnum implements ExceptionInfo {
 
+    NO_PROPERTIES("3001", "未找到%s配置项"),
+    WRONG_TYPE("3002", "文档格式不正确"),
     ;
 
 
-    private final Integer code;
+    private final String code;
     private final String desc;
 }

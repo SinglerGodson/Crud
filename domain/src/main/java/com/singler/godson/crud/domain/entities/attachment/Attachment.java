@@ -8,8 +8,7 @@ import lombok.Data;
  * @author maenfang1
  */
 @Data
-public class Attachment extends BasicEntity<Long> {
-    private static final long serialVersionUID = 1L;
+public class Attachment extends BasicEntity {
 
     public Attachment(){}
 

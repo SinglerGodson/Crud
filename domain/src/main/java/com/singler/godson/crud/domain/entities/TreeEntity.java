@@ -10,10 +10,10 @@ import lombok.Data;
  * @date 2020/11/13 16:47
  */
 @Data
-public class TreeEntity<ID>
-        extends BasicEntity<ID>
-        implements ITreeEntity<ID> {
-    private ID parentId;
+public class TreeEntity
+        extends BasicEntity
+        implements ITreeEntity<Long> {
+    private Long parentId;
     private String path;
     private Integer level;
 

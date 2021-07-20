@@ -1,4 +1,4 @@
-package com.singler.godson.crud.enums;
+package com.singler.godson.crud.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

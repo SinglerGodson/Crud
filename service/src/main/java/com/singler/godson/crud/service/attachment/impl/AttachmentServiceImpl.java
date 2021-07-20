@@ -1,5 +1,7 @@
 package com.singler.godson.crud.service.attachment.impl;
 
+import com.jd.ecc.oss.service.OssClient;
+import com.singler.godson.crud.common.exceptions.AttachmentExceptionEnum;
 import com.singler.godson.crud.common.exceptions.CrudException;
 import com.singler.godson.crud.common.utils.CollectionUtils;
 import com.singler.godson.crud.common.utils.FileUtils;
@@ -9,8 +11,8 @@ import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequest;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResult;
 import com.singler.godson.crud.domain.dtoes.attachment.AttachmentSaveRequest;
 import com.singler.godson.crud.domain.entities.attachment.Attachment;
-import com.singler.godson.crud.enums.ContentTypeEnum;
-import com.singler.godson.crud.service.AbstractCrudService;
+import com.singler.godson.crud.common.enums.ContentTypeEnum;
+import com.singler.godson.crud.service.impl.AbstractCrudService;
 import com.singler.godson.crud.service.attachment.AttachmentService;
 import com.singler.godson.crud.service.attachment.UploadedService;
 import com.singler.godson.hibatis.orderby.OrderBy;
@@ -41,6 +43,10 @@ import java.util.stream.Collectors;
 public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
         AttachmentSaveRequest, AttachmentQueryRequest, AttachmentResult, AttachmentDao>
         implements AttachmentService {
+
+
+    @Autowired
+    private OssClient ossClient;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -226,10 +232,10 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
     @Override
     public byte[] downloadBytes(Attachment attachment) {
         if (attachment == null || StringUtils.isEmpty(attachment.getUrl())) {
-            throw new CrudException(1003, "参数不能为空");
+            throw new CrudException(AttachmentExceptionEnum.EMPTY_URL);
         }
-//        return ossClientProxy.getObjByteArr(attachment.getUrl());
-        return null;
+        return ossClient.getObjByteArr(attachment.getPlatformId(), attachment.getUrl());
+//        return null;
     }
 
     @Override
@@ -274,7 +280,7 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
         if (!CollectionUtils.isEmpty(attachmentList)) {
             boolean emptyBizIdOrId  = attachmentList.stream().anyMatch(this::emptyAttachment);
             if (emptyBizIdOrId) {
-                throw new CrudException(500, "bizId与id不能全为空");
+                throw new CrudException(AttachmentExceptionEnum.EMPTY_ID_BIZ_ID);
             }
 
             boolean emptyModule = attachmentList.stream().anyMatch(a -> StringUtils.isEmpty(a.getModule()));
@@ -379,7 +385,7 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
     @Override
     public List<AttachmentResult> queryByIdAndBizId(List<AttachmentSaveRequest> attachmentVoList, Long bizId) {
         if (null == bizId) {
-            throw new CrudException(500,"协议数据不存在！");
+            throw new CrudException(AttachmentExceptionEnum.EMPTY_BID);
         }
         Set<Long> saveIdList = attachmentVoList.stream().map(AttachmentSaveRequest::getId).filter(Objects::nonNull).collect(Collectors.toSet());
         // 查询附件上传表

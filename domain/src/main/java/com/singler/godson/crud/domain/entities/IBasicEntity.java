@@ -13,9 +13,6 @@ import java.util.Date;
  */
 public interface IBasicEntity<ID> extends IBasicDomain<ID> {
 
-    Boolean isDeleted();
-    void setDeleted(Boolean deleted);
-
     Integer getVersion();
     void setVersion(Integer version);
 

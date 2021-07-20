@@ -2,9 +2,9 @@ package com.singler.godson.crud.web.advisores;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import com.jd.ecc.commons.web.model.RespData;
 import com.singler.godson.crud.common.exceptions.CrudException;
 import com.singler.godson.crud.common.utils.JsonUtils;
-import com.singler.godson.crud.domain.RespData;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,10 +12,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
@@ -28,9 +26,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  */
 @ControllerAdvice // (annotations = RespDataController.class)
 public class ResponseAdvisor implements ResponseBodyAdvice<Object> {
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {}
 
     @Override
     public boolean supports(MethodParameter parameter, Class<? extends HttpMessageConverter<?>> httpMessageConverterClass) {
@@ -56,9 +51,9 @@ public class ResponseAdvisor implements ResponseBodyAdvice<Object> {
     @ExceptionHandler(value = Exception.class)
     public RespData errorHandler(Exception ex) {
         if (ex instanceof CrudException) {
-            CrudException crudEx = (CrudException) ex;
-            return RespData.error(crudEx.getCode(), crudEx.getDesc());
+            CrudException crudException = (CrudException) ex;
+            return RespData.error(crudException.getCode(), crudException.getDesc());
         }
-        return RespData.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+        return RespData.error("" + HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
     }
 }

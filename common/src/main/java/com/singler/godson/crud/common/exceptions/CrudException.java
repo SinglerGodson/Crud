@@ -9,21 +9,24 @@ package com.singler.godson.crud.common.exceptions;
  */
 public class CrudException extends RuntimeException {
 
-    private int code;
-    private String desc;
+    private final String code;
+    private final String desc;
 
-    private CrudException(){}
-
-    public CrudException(ExceptionInfo exceptionInfo) {
-
+    private CrudException() {
+        this.code = null;
+        this.desc = null;
     }
 
-    public CrudException(int code, String desc) {
+    public CrudException(String code, String desc) {
         this.code = code;
         this.desc = desc;
     }
 
-    public int getCode() {
+    public CrudException(ExceptionInfo exceptionInfo, Object... values) {
+        this(exceptionInfo.getCode(), String.format(exceptionInfo.getDesc(), values));
+    }
+
+    public String getCode() {
         return code;
     }
 

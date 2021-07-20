@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class EnumsSelectableServiceImpl implements SelectableService<String> {
 
-    private final static Map<String, List<Option>> OPTIONS = new ConcurrentHashMap<>();
+    private static final Map<String, List<Option>> OPTIONS = new ConcurrentHashMap<>();
 
     static {
         putOptions(BooleanEnum.class, BooleanEnum::strValue, BooleanEnum::desc);

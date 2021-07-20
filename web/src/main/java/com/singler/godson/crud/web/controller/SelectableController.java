@@ -1,6 +1,5 @@
 package com.singler.godson.crud.web.controller;
 
-import com.singler.godson.crud.common.exceptions.CrudException;
 import com.singler.godson.crud.common.utils.BeanUtils;
 import com.singler.godson.crud.common.utils.ClassUtils;
 import com.singler.godson.crud.domain.dtoes.selectable.Option;
@@ -10,7 +9,6 @@ import com.singler.godson.crud.service.selectable.SelectableService;
 import com.singler.godson.crud.common.utils.RequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,9 +37,6 @@ public class SelectableController {
                                @PathVariable("serviceName") String serviceName) throws BeanUtils.MapToBeanException {
         serviceName = generateServiceName(serviceName);
         SelectableService selectableService = applicationContext.getBean(serviceName, SelectableService.class);
-        if (selectableService == null) {
-            throw new CrudException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "未实现SelectableService接口");
-        }
         return selectableService.options(getParamObject(request, selectableService.getClass()));
     }
 
@@ -54,7 +49,7 @@ public class SelectableController {
             }
             genericClassMap.put(serviceClass, genericClass);
         }
-        if (!genericClass.equals(AbstractCacheableSelectableService.class)) {
+        if (!AbstractCacheableSelectableService.class.equals(genericClass)) {
             return BeanUtils.mapToBean(RequestUtils.paramsMap(request), genericClass);
         }
         return null;

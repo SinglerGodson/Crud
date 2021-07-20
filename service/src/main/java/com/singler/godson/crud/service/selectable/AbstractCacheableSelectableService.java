@@ -18,7 +18,7 @@ public abstract class AbstractCacheableSelectableService implements SelectableSe
 
     @Override
     public final List<Option> options(Void param) {
-        if (options.size() == 0) {
+        if (options.isEmpty()) {
             synchronized (options) {
                 options.addAll(options());
             }
@@ -26,5 +26,9 @@ public abstract class AbstractCacheableSelectableService implements SelectableSe
         return options;
     }
 
+    /**
+     * 返回需要缓存的下拉列表的数据
+     * @return
+     */
     protected abstract List<Option> options();
 }

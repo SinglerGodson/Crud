@@ -1,10 +1,12 @@
-package com.singler.godson.crud.service;
+package com.singler.godson.crud.service.impl;
 
 import com.github.pagehelper.Page;
 import com.singler.godson.crud.common.exceptions.CrudException;
+import com.singler.godson.crud.common.exceptions.CrudExceptionEnum;
 import com.singler.godson.crud.common.utils.CollectionUtils;
 import com.singler.godson.crud.dao.CrudDao;
 import com.singler.godson.crud.domain.entities.IBasicEntity;
+import com.singler.godson.crud.service.CrudService;
 import com.singler.godson.hibatis.orderby.OrderBy;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -57,7 +59,7 @@ public abstract class AbstractCrudService<ID,
 
     @Override
     public int upsert(SAVE_DTO entity) {
-        return 0;
+        return entity.getId() == null ? insert(entity) : updateById(entity, entity.getId());
     }
 
     @Override
@@ -100,10 +102,10 @@ public abstract class AbstractCrudService<ID,
         if (!CollectionUtils.isEmpty(entities)) {
             entities.forEach(entity -> {
                 if (entity == null) {
-                    throw new CrudException(500, "参数不可为空");
+                    throw new CrudException(CrudExceptionEnum.EMPTY_ENTITY);
                 }
             });
         }
-        throw new CrudException(500, "参数不可为空");
+        throw new CrudException(CrudExceptionEnum.EMPTY_ENTITY);
     }
 }

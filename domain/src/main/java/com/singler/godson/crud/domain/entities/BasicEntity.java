@@ -1,8 +1,8 @@
 package com.singler.godson.crud.domain.entities;
 
+import com.jd.ecc.commons.web.model.BaseEntity;
+import com.singler.godson.hibatis.annotation.Id;
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  * 基础数据库实体类
@@ -12,17 +12,10 @@ import java.util.Date;
  * @date 2020/4/5 23:39
  */
 @Data
-public class BasicEntity<ID> implements IBasicEntity<ID> {
-    private ID id;
-    private ID creator;
-    private ID modifier;
-    private Date created;
-    private Date modified;
-    private Boolean deleted;
+public class BasicEntity extends BaseEntity implements IBasicEntity<Long> {
+    @Id
+    private Long id;
+    private Long creator;
+    private Long modifier;
     private Integer version;
-
-    @Override
-    public Boolean isDeleted() {
-        return deleted;
-    }
 }
