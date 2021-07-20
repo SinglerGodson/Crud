@@ -1,10 +1,10 @@
 package com.singler.godson.crud.dao.attachment;
 
 import com.singler.godson.crud.dao.CrudDao;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentCountResultVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequestVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResultVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentSaveRequestVo;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentCountResult;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequest;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResult;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentSaveRequest;
 import com.singler.godson.crud.domain.entities.attachment.Attachment;
 import com.singler.godson.hibatis.where.WhereClause;
 import org.apache.ibatis.annotations.Param;
@@ -24,10 +24,10 @@ public interface AttachmentDao extends CrudDao<Long, Attachment> {
     String ATTACHMENT_LIST = "attachmentList";
 
     @Override
-    AttachmentResultVo select(@Param(WHERE_CLAUSES) WhereClause... whereClauses);
+    AttachmentResult select(@Param(WHERE_CLAUSES) WhereClause... whereClauses);
 
-    int updateBatch(@Param(ATTACHMENT_LIST) List<AttachmentSaveRequestVo> attachmentList);
+    int updateBatch(@Param(ATTACHMENT_LIST) List<AttachmentSaveRequest> attachmentList);
 
-    List<AttachmentCountResultVo> countByBizIdSet(AttachmentQueryRequestVo queryRequestVo);
+    List<AttachmentCountResult> countByBizIdSet(AttachmentQueryRequest queryRequestVo);
 
 }

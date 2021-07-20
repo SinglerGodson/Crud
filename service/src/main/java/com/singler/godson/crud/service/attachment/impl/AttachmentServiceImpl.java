@@ -4,12 +4,12 @@ import com.singler.godson.crud.common.exceptions.CrudException;
 import com.singler.godson.crud.common.utils.CollectionUtils;
 import com.singler.godson.crud.common.utils.FileUtils;
 import com.singler.godson.crud.dao.attachment.AttachmentDao;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentCountResultVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequestVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResultVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentSaveRequestVo;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentCountResult;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequest;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResult;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentSaveRequest;
 import com.singler.godson.crud.domain.entities.attachment.Attachment;
-import com.singler.godson.crud.enumtype.ContentTypeEnum;
+import com.singler.godson.crud.enums.ContentTypeEnum;
 import com.singler.godson.crud.service.AbstractCrudService;
 import com.singler.godson.crud.service.attachment.AttachmentService;
 import com.singler.godson.crud.service.attachment.UploadedService;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
-        AttachmentSaveRequestVo, AttachmentQueryRequestVo, AttachmentResultVo, AttachmentDao>
+        AttachmentSaveRequest, AttachmentQueryRequest, AttachmentResult, AttachmentDao>
         implements AttachmentService {
 
     @Autowired
@@ -133,7 +133,7 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
 
     @Override
     public Attachment download(String module, Long type, Long bizId) {
-        AttachmentQueryRequestVo queryVo = new AttachmentQueryRequestVo();
+        AttachmentQueryRequest queryVo = new AttachmentQueryRequest();
         queryVo.setType(type);
         queryVo.setBizId(bizId);
         queryVo.setModule(module);
@@ -262,7 +262,7 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
     @Override
     public int delete(Set<Long> idSet) {
         if (!CollectionUtils.isEmpty(idSet)) {
-            AttachmentQueryRequestVo queryVo = new AttachmentQueryRequestVo();
+            AttachmentQueryRequest queryVo = new AttachmentQueryRequest();
             queryVo.setIdInSet(idSet);
             return delete(queryVo);
         }
@@ -270,7 +270,7 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
     }
 
     @Override
-    public int update(List<AttachmentSaveRequestVo> attachmentList) {
+    public int update(List<AttachmentSaveRequest> attachmentList) {
         if (!CollectionUtils.isEmpty(attachmentList)) {
             boolean emptyBizIdOrId  = attachmentList.stream().anyMatch(this::emptyAttachment);
             if (emptyBizIdOrId) {
@@ -280,12 +280,12 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
             boolean emptyModule = attachmentList.stream().anyMatch(a -> StringUtils.isEmpty(a.getModule()));
             if (!emptyModule) {
                 // module\emptyBizId不为空时，重置不在id范围内的数据的bizId（即清除不在id范围内的关联数据，模拟先删后增效果）。
-                AttachmentQueryRequestVo queryVo = new AttachmentQueryRequestVo();
-                queryVo.setIdNotInSet (attachmentList.stream().map(AttachmentSaveRequestVo::getId    ).filter(Objects::nonNull).collect(Collectors.toSet()));
-                queryVo.setTypeInSet  (attachmentList.stream().map(AttachmentSaveRequestVo::getType  ).filter(Objects::nonNull).collect(Collectors.toSet()));
-                queryVo.setBizIdInSet (attachmentList.stream().map(AttachmentSaveRequestVo::getBizId ).filter(Objects::nonNull).collect(Collectors.toSet()));
-                queryVo.setModuleInSet(attachmentList.stream().map(AttachmentSaveRequestVo::getModule).filter(Objects::nonNull).collect(Collectors.toSet()));
-                AttachmentSaveRequestVo clareVo = new AttachmentSaveRequestVo();
+                AttachmentQueryRequest queryVo = new AttachmentQueryRequest();
+                queryVo.setIdNotInSet (attachmentList.stream().map(AttachmentSaveRequest::getId    ).filter(Objects::nonNull).collect(Collectors.toSet()));
+                queryVo.setTypeInSet  (attachmentList.stream().map(AttachmentSaveRequest::getType  ).filter(Objects::nonNull).collect(Collectors.toSet()));
+                queryVo.setBizIdInSet (attachmentList.stream().map(AttachmentSaveRequest::getBizId ).filter(Objects::nonNull).collect(Collectors.toSet()));
+                queryVo.setModuleInSet(attachmentList.stream().map(AttachmentSaveRequest::getModule).filter(Objects::nonNull).collect(Collectors.toSet()));
+                AttachmentSaveRequest clareVo = new AttachmentSaveRequest();
                 clareVo.setBizId(UN_RELATED_BIZ_ID);
                 getDao().update(clareVo, queryVo);
             }
@@ -308,7 +308,7 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
 
     @Override
     public int update(String module, Long type, Long bizId, Long id) {
-        AttachmentSaveRequestVo queryVo = new AttachmentSaveRequestVo();
+        AttachmentSaveRequest queryVo = new AttachmentSaveRequest();
         queryVo.setType(type);
         queryVo.setBizId(bizId);
         queryVo.setModule(module);
@@ -316,13 +316,13 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
     }
 
     @Override
-    public List<AttachmentResultVo> queryByBizIdSet(String module, Long type, Set<Long> bizIdSet) {
+    public List<AttachmentResult> queryByBizIdSet(String module, Long type, Set<Long> bizIdSet) {
         return query(transfer(module, type, null, bizIdSet), OrderBy.DEFAULT);
     }
 
     @Override
-    public AttachmentResultVo queryByBizId(String module, Long type, Long bizId) {
-        AttachmentQueryRequestVo vo = new AttachmentQueryRequestVo();
+    public AttachmentResult queryByBizId(String module, Long type, Long bizId) {
+        AttachmentQueryRequest vo = new AttachmentQueryRequest();
         vo.setBizId(bizId);
         vo.setModule(module);
         vo.setType(type);
@@ -330,35 +330,20 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
     }
 
     @Override
-    public List<AttachmentCountResultVo> countByBizIdSet(String module, Long type, Set<Long> bizIdSet) {
+    public List<AttachmentCountResult> countByBizIdSet(String module, Long type, Set<Long> bizIdSet) {
         return getDao().countByBizIdSet(transfer(module, type, null, bizIdSet));
     }
 
     @Override
-    public void checkIdExist(List<AttachmentSaveRequestVo> attachmentVoList, List<AttachmentResultVo> attachmentList) {
-        // 附件表信息Map
-        Map<Long, AttachmentResultVo> attachmentResultMap
-                = attachmentList.stream().filter(Objects::nonNull).collect(Collectors.toMap(AttachmentResultVo::getId, info -> info, (v1, v2) -> v1));
-        attachmentVoList.forEach(info -> {
-            Long fileId = info.getId();
-            if (null != info.getId()) {
-                if (!attachmentResultMap.containsKey(fileId)) {
-                    throw new CrudException(500, "附件类型:"+info.getFileTypeCode()+",上传附件信息不存在!");
-                }
-            }
-        });
-    }
-
-    @Override
-    public AttachmentResultVo query(Long bizId) {
-        AttachmentQueryRequestVo vo = new AttachmentQueryRequestVo();
+    public AttachmentResult query(Long bizId) {
+        AttachmentQueryRequest vo = new AttachmentQueryRequest();
         vo.setBizId(bizId);
         return this.query(vo);
     }
 
     @Override
-    public AttachmentResultVo query(Long bizId,String module,Long type) {
-        AttachmentQueryRequestVo vo = new AttachmentQueryRequestVo();
+    public AttachmentResult query(Long bizId, String module, Long type) {
+        AttachmentQueryRequest vo = new AttachmentQueryRequest();
         vo.setBizId(bizId);
         vo.setModule(module);
         vo.setType(type);
@@ -366,15 +351,15 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
     }
 
     @Override
-    public List<AttachmentResultVo> queryByBizId(Long bizId) {
+    public List<AttachmentResult> queryByBizId(Long bizId) {
         return this.queryByBizId(bizId,OrderBy.DEFAULT);
     }
 
     @Override
-    public List<AttachmentResultVo> queryByBizId(List<Long> bizIdList) {
+    public List<AttachmentResult> queryByBizId(List<Long> bizIdList) {
         if (!CollectionUtils.isEmpty(bizIdList)) {
             Set<Long> bizIdSet = new HashSet<>(bizIdList);
-            AttachmentQueryRequestVo vo = new AttachmentQueryRequestVo();
+            AttachmentQueryRequest vo = new AttachmentQueryRequest();
             vo.setBizIdInSet(bizIdSet);
             return this.query(vo,OrderBy.DEFAULT);
         }
@@ -382,9 +367,9 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
     }
 
     @Override
-    public List<AttachmentResultVo> queryByBizId(Long bizId, OrderBy orderBy) {
+    public List<AttachmentResult> queryByBizId(Long bizId, OrderBy orderBy) {
         if (bizId == null) {
-            AttachmentQueryRequestVo vo = new AttachmentQueryRequestVo();
+            AttachmentQueryRequest vo = new AttachmentQueryRequest();
             vo.setBizId(bizId);
             return this.query(vo, orderBy);
         }
@@ -392,29 +377,29 @@ public class AttachmentServiceImpl extends AbstractCrudService<Long, Attachment,
     }
 
     @Override
-    public List<AttachmentResultVo> queryByIdAndBizId(List<AttachmentSaveRequestVo> attachmentVoList, Long bizId) {
+    public List<AttachmentResult> queryByIdAndBizId(List<AttachmentSaveRequest> attachmentVoList, Long bizId) {
         if (null == bizId) {
             throw new CrudException(500,"协议数据不存在！");
         }
-        Set<Long> saveIdList = attachmentVoList.stream().map(AttachmentSaveRequestVo::getId).filter(Objects::nonNull).collect(Collectors.toSet());
+        Set<Long> saveIdList = attachmentVoList.stream().map(AttachmentSaveRequest::getId).filter(Objects::nonNull).collect(Collectors.toSet());
         // 查询附件上传表
-        List<AttachmentResultVo> attachmentResultVos = this.queryByBizIdSet(new HashSet<Long>() {{add(bizId);}});
-        List<AttachmentResultVo> queryAttachmentList = this.query(new AttachmentQueryRequestVo() {{setIdInSet(saveIdList);}}, OrderBy.DEFAULT);
-        if (CollectionUtils.isEmpty(attachmentResultVos)) {
-            attachmentResultVos = queryAttachmentList;
+        List<AttachmentResult> attachmentResults = this.queryByBizIdSet(new HashSet<Long>() {{add(bizId);}});
+        List<AttachmentResult> queryAttachmentList = this.query(new AttachmentQueryRequest() {{setIdInSet(saveIdList);}}, OrderBy.DEFAULT);
+        if (CollectionUtils.isEmpty(attachmentResults)) {
+            attachmentResults = queryAttachmentList;
         } else {
-            attachmentResultVos.addAll(queryAttachmentList);
+            attachmentResults.addAll(queryAttachmentList);
         }
-        return attachmentResultVos;
+        return attachmentResults;
     }
 
     @Override
-    public List<AttachmentResultVo> queryByBizIdSet(Set<Long> idSet) {
+    public List<AttachmentResult> queryByBizIdSet(Set<Long> idSet) {
         return getDao().select(OrderBy.DEFAULT, transfer(null, null, null, idSet));
     }
 
-    private AttachmentQueryRequestVo transfer(String module, Long type, Long bizId, Set<Long> bizIdSet) {
-        AttachmentQueryRequestVo queryVo = new AttachmentQueryRequestVo();
+    private AttachmentQueryRequest transfer(String module, Long type, Long bizId, Set<Long> bizIdSet) {
+        AttachmentQueryRequest queryVo = new AttachmentQueryRequest();
         queryVo.setType(type);
         queryVo.setBizId(bizId);
         queryVo.setModule(module);

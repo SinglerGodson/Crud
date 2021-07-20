@@ -1,4 +1,4 @@
-package com.singler.godson.crud.common.enumtype;
+package com.singler.godson.crud.common.enums;
 
 /**
  * 布尔值枚举类

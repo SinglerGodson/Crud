@@ -2,15 +2,14 @@ package com.singler.godson.crud.web.controller;
 
 import com.singler.godson.crud.common.utils.MultipartFileUtils;
 import com.singler.godson.crud.common.utils.ResponseUtils;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequestVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResultVo;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequest;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResult;
 import com.singler.godson.crud.domain.entities.attachment.Attachment;
-import com.singler.godson.crud.enumtype.CharsetEnum;
+import com.singler.godson.crud.enums.CharsetEnum;
 import com.singler.godson.crud.service.attachment.AttachmentService;
 import com.singler.godson.hibatis.orderby.OrderBy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,7 +46,7 @@ public class AttachmentController {
     }
 
     @GetMapping("/query")
-    public List<AttachmentResultVo> query(@ModelAttribute AttachmentQueryRequestVo queryReqDTO) {
+    public List<AttachmentResult> query(@ModelAttribute AttachmentQueryRequest queryReqDTO) {
         return attachmentService.query(queryReqDTO, OrderBy.DEFAULT);
     }
 

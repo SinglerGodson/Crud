@@ -1,7 +1,7 @@
 package com.singler.godson.crud.service.selectable;
 
 
-import com.singler.godson.crud.domain.form.Option;
+import com.singler.godson.crud.domain.dtoes.selectable.Option;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ public class RespData {
 
     public static final Integer SUCCESS = 0;
 
-    private Integer code;
+    private final Integer code;
 
     private String  msg;
 

@@ -5,9 +5,12 @@ import lombok.Data;
 
 /**
  * 附件信息查询结果
+ * @author maenfang1
+ * @version 1.0
+ * @date 2020-04-20 9:37
  */
 @Data
-public class AttachmentResultVo extends Attachment {
+public class AttachmentResult extends Attachment {
 
     /**
      * 前缀

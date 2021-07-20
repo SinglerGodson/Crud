@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @date 2020-04-20 9:37
  */
 @Data
-public class AttachmentCountResultVo implements Serializable {
+public class AttachmentCountResult implements Serializable {
 
     private String bizId;
 

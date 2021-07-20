@@ -1,9 +1,9 @@
 package com.singler.godson.crud.service.attachment;
 
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentCountResultVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequestVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResultVo;
-import com.singler.godson.crud.domain.dtoes.attachment.AttachmentSaveRequestVo;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentCountResult;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentQueryRequest;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentResult;
+import com.singler.godson.crud.domain.dtoes.attachment.AttachmentSaveRequest;
 import com.singler.godson.crud.domain.entities.attachment.Attachment;
 import com.singler.godson.crud.service.CrudService;
 import com.singler.godson.hibatis.orderby.OrderBy;
@@ -19,7 +19,7 @@ import java.util.Set;
  * @author lipengpeng
  * @date 2020/4/18
  */
-public interface AttachmentService extends CrudService<Long, Attachment, AttachmentSaveRequestVo, AttachmentQueryRequestVo, AttachmentResultVo> {
+public interface AttachmentService extends CrudService<Long, Attachment, AttachmentSaveRequest, AttachmentQueryRequest, AttachmentResult> {
 
     Long UN_RELATED_BIZ_ID = 0L;
 
@@ -74,23 +74,21 @@ public interface AttachmentService extends CrudService<Long, Attachment, Attachm
     int delete(String module, Long type, Long bizId);
 
     int update(String module, Long type, Long bizId, Long id);
-    int update(List<AttachmentSaveRequestVo> attachmentEntityList);
+    int update(List<AttachmentSaveRequest> attachmentEntityList);
 
-    AttachmentResultVo queryByBizId(String module,Long type, Long bizId);
-    List<AttachmentResultVo> queryByBizIdSet(String module, Long type, Set<Long> bizIdSet);
-    List<AttachmentCountResultVo> countByBizIdSet(String module, Long type, Set<Long> bizIdSet);
+    AttachmentResult queryByBizId(String module, Long type, Long bizId);
+    List<AttachmentResult> queryByBizIdSet(String module, Long type, Set<Long> bizIdSet);
+    List<AttachmentCountResult> countByBizIdSet(String module, Long type, Set<Long> bizIdSet);
 
-    void checkIdExist(List<AttachmentSaveRequestVo> attachmentVoList, List<AttachmentResultVo> attachmentList);
+    AttachmentResult query(Long bizId);
+    AttachmentResult query(Long bizId, String module, Long type);
 
-    AttachmentResultVo query(Long bizId);
-    AttachmentResultVo query(Long bizId,String module,Long type);
+    List<AttachmentResult> queryByBizId(Long bizId);
+    List<AttachmentResult> queryByBizId(Long bizId, OrderBy orderBy);
 
-    List<AttachmentResultVo> queryByBizId(Long bizId);
-    List<AttachmentResultVo> queryByBizId(Long bizId, OrderBy orderBy);
+    List<AttachmentResult> queryByBizId(List<Long> bizIdList);
+    List<AttachmentResult> queryByBizIdSet(Set<Long> bizIdSet);
 
-    List<AttachmentResultVo> queryByBizId(List<Long> bizIdList);
-    List<AttachmentResultVo> queryByBizIdSet(Set<Long> bizIdSet);
-
-    List<AttachmentResultVo> queryByIdAndBizId(List<AttachmentSaveRequestVo> attachmentVoList, Long id);
+    List<AttachmentResult> queryByIdAndBizId(List<AttachmentSaveRequest> attachmentVoList, Long id);
 
 }

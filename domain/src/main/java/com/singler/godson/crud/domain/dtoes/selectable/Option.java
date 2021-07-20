@@ -1,4 +1,4 @@
-package com.singler.godson.crud.domain.form;
+package com.singler.godson.crud.domain.dtoes.selectable;
 
 import java.io.Serializable;
 

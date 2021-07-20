@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * 附件信息
+ * @author maenfang1
  */
 @Data
 public class Attachment extends BasicEntity<Long> {

@@ -14,6 +14,10 @@ public class CrudException extends RuntimeException {
 
     private CrudException(){}
 
+    public CrudException(ExceptionInfo exceptionInfo) {
+
+    }
+
     public CrudException(int code, String desc) {
         this.code = code;
         this.desc = desc;

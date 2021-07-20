@@ -3,7 +3,7 @@ package com.singler.godson.crud.web.controller;
 import com.singler.godson.crud.common.exceptions.CrudException;
 import com.singler.godson.crud.common.utils.BeanUtils;
 import com.singler.godson.crud.common.utils.ClassUtils;
-import com.singler.godson.crud.domain.form.Option;
+import com.singler.godson.crud.domain.dtoes.selectable.Option;
 import com.singler.godson.crud.service.selectable.AbstractCacheableSelectableService;
 import com.singler.godson.crud.service.selectable.EnumsSelectableServiceImpl;
 import com.singler.godson.crud.service.selectable.SelectableService;
@@ -32,9 +32,9 @@ public class SelectableController {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private Map<Class<?>, Class<?>> genericClassMap = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Class<?>> genericClassMap = new ConcurrentHashMap<>();
 
-    @RequestMapping(value = "/{serviceName}", method = RequestMethod.GET)
+    @GetMapping("/{serviceName}")
     public List<Option> select(HttpServletRequest request,
                                @PathVariable("serviceName") String serviceName) throws BeanUtils.MapToBeanException {
         serviceName = generateServiceName(serviceName);
@@ -60,7 +60,7 @@ public class SelectableController {
         return null;
     }
 
-    @RequestMapping(value = "/form/selectable/enums/{enumName}", method = RequestMethod.GET)
+    @GetMapping("/enums/{enumName}")
     public List<Option> select(@PathVariable("enumName") String enumName) {
         return applicationContext.getBean(EnumsSelectableServiceImpl.class).options(enumName);
     }

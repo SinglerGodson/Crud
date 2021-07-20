@@ -1,10 +1,9 @@
 package com.singler.godson.crud.service.selectable;
 
 
-import com.singler.godson.crud.common.enumtype.BooleanEnum;
+import com.singler.godson.crud.common.enums.BooleanEnum;
 import com.singler.godson.crud.common.utils.StringUtils;
-import com.singler.godson.crud.domain.dtoes.LoginUserInfo;
-import com.singler.godson.crud.domain.form.Option;
+import com.singler.godson.crud.domain.dtoes.selectable.Option;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;

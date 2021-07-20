@@ -5,8 +5,8 @@ import lombok.Data;
 
 /**
  * 附件信息保存对象
+ * @author maenfang1
  */
 @Data
-public class AttachmentSaveRequestVo extends Attachment {
-    private String fileTypeCode;
+public class AttachmentSaveRequest extends Attachment {
 }
